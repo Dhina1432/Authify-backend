@@ -44,7 +44,7 @@ public class AuthController {
             authenticate(request.getEmail(), request.getPassword());
             final UserDetails userDetails = appUserDetailService.loadUserByUsername(request.getEmail());
             final String jwtToken = jwtUtil.generateToken(userDetails);
-            ResponseCookie cookie = ResponseCookie.from("jwt", jwtToken).httpOnly(true).sameSite("Strict").path("/").maxAge(Duration.ofDays(1)).build();
+            ResponseCookie cookie = ResponseCookie.from("jwt", jwtToken).httpOnly(true).sameSite("none").path("/").maxAge(Duration.ofDays(1)).build();
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new AuthResponse(request.getEmail(), jwtToken));
 
 
@@ -129,7 +129,7 @@ public class AuthController {
                 .secure(false)
                 .path("/")
                 .maxAge(0)
-                .sameSite("Strict")
+                .sameSite("none")
                 .build();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,cookie.toString())
