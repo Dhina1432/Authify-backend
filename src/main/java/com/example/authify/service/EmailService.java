@@ -1,47 +1,65 @@
 package com.example.authify.service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-    private final JavaMailSender mailSender;
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    private static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
     @Value("${spring.mail.properties.mail.smtp.from}")
     private String fromEmail;
 
-    public void sendWelcomeEmail(String toEmail,String name){
-        SimpleMailMessage message=new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(toEmail);
-        message.setSubject("Welcome to our platform");
-        message.setText("Hello "+name+" ,\n\n Thanks for Joining us");
-        mailSender.send(message);
+    @Value("${brevo.api.key}")
+    private String brevoApiKey;
+
+    private void sendEmail(String toEmail, String subject, String content) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("api-key", brevoApiKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("sender", Map.of("email", fromEmail, "name", "Authify"));
+        body.put("to", List.of(Map.of("email", toEmail)));
+        body.put("subject", subject);
+        body.put("htmlContent", content);
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+
+        try {
+            restTemplate.postForEntity(BREVO_API_URL, request, String.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to send Email", e);
+        }
     }
 
-    public void sendResetOtp(String toEmail,String otp){
-        SimpleMailMessage message=new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(toEmail);
-        message.setSubject("Password reset otp");
-        message.setText(" Here is your "+otp+" for resetting your password,will expire in 10 min");
+    public void sendWelcomeEmail(String toEmail, String name) {
+        String content = "<p>Hello " + name + ",</p><p>Thanks for joining us</p>";
+        sendEmail(toEmail, "Welcome to our platform", content);
+    }
+
+    public void sendResetOtp(String toEmail, String otp) {
+        String content = "<p>Here is your OTP: <b>" + otp + "</b> for resetting your password, will expire in 10 min</p>";
         System.out.println("Sending...");
-        mailSender.send(message);
+        sendEmail(toEmail, "Password reset OTP", content);
         System.out.println("Sent!");
     }
 
-    public void sendOtpEmail(String toEmail, String  otp){
-        SimpleMailMessage message=new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(toEmail);
-        message.setSubject("Account verification OTP");
-        message.setText(" Here is your "+otp+" for Account Verification,will expire in 10 min");
-        mailSender.send(message);
+    public void sendOtpEmail(String toEmail, String otp) {
+        String content = "<p>Here is your OTP: <b>" + otp + "</b> for Account Verification, will expire in 10 min</p>";
+        sendEmail(toEmail, "Account verification OTP", content);
     }
-
 }
