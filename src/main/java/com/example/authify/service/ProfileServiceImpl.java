@@ -57,7 +57,9 @@ public class ProfileServiceImpl implements ProfileService{
         userRepository.save(existEntity);
 
         try {
-            emailService.sendResetOtp(existEntity.getEmail(),otp);
+            System.out.println("Before sending email");
+            emailService.sendResetOtp(existEntity.getEmail(), otp);
+            System.out.println("After sending email");
         } catch (Exception e) {
             throw new RuntimeException("Unable to send Email");
         }
