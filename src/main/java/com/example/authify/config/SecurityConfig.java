@@ -57,7 +57,7 @@ public class SecurityConfig {
         CorsConfiguration config=new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173","https://authify-frontend-x3nq.vercel.app"));
         config.setAllowedMethods(List.of("PUT","GET","POST","DELETE","OPTIONS","PATCH"));
-        config.setAllowedHeaders(List.of("Authorization","Content-Type"));
+        config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();

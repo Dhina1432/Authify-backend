@@ -30,7 +30,9 @@ public class EmailService {
         message.setTo(toEmail);
         message.setSubject("Password reset otp");
         message.setText(" Here is your "+otp+" for resetting your password,will expire in 10 min");
+        System.out.println("Sending...");
         mailSender.send(message);
+        System.out.println("Sent!");
     }
 
     public void sendOtpEmail(String toEmail, String  otp){
