@@ -51,11 +51,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public CorsFilter corsFilter(){
-        return new CorsFilter(corsConfigurationSource());
-    }
 
+    @Bean
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config=new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173","https://authify-frontend-x3nq.vercel.app"));
