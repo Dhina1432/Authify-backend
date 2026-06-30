@@ -41,6 +41,9 @@ public class EmailService {
 
         try {
             restTemplate.postForEntity(BREVO_API_URL, request, String.class);
+        } catch (org.springframework.web.client.HttpClientErrorException e) {
+            System.out.println("Brevo error response: " + e.getResponseBodyAsString());
+            throw new RuntimeException("Unable to send Email: " + e.getResponseBodyAsString(), e);
         } catch (Exception e) {
             throw new RuntimeException("Unable to send Email", e);
         }
