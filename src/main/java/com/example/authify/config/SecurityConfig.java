@@ -53,7 +53,7 @@ public class SecurityConfig {
 
 
     @Bean
-    private CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config=new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173","https://authify-frontend-x3nq.vercel.app"));
         config.setAllowedMethods(List.of("PUT","GET","POST","DELETE","OPTIONS","PATCH"));
