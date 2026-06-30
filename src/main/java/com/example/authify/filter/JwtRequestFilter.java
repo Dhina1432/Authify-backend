@@ -31,6 +31,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //        System.out.println("Path = " + request.getServletPath());
 //        System.out.println("Request URI = " + request.getRequestURI());
         String path = request.getServletPath();
+        System.out.println("================================");
+        System.out.println("Path = " + path);
+        System.out.println("URI = " + request.getRequestURI());
+        System.out.println("Is Public = " + PUBLIC_URLS.contains(path));
+        System.out.println("================================");
         if (PUBLIC_URLS.contains(path)) {
 //            System.out.println("PUBLIC URL - SKIPPING JWT FILTER");
             filterChain.doFilter(request, response);
