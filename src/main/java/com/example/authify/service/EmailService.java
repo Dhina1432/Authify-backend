@@ -42,12 +42,8 @@ public class EmailService {
         try {
             restTemplate.postForEntity(BREVO_API_URL, request, String.class);
         } catch (org.springframework.web.client.HttpClientErrorException e) {
-            System.out.println("Brevo HTTP status: " + e.getStatusCode());
-            System.out.println("Brevo error response: " + e.getResponseBodyAsString());
-            System.out.println("Brevo response headers: " + e.getResponseHeaders());
             throw new RuntimeException("Unable to send Email: " + e.getStatusCode() + " " + e.getResponseBodyAsString(), e);
         } catch (Exception e) {
-            System.out.println("Brevo - non-HTTP exception: " + e.getClass().getName() + " - " + e.getMessage());
             throw new RuntimeException("Unable to send Email", e);
         }
     }
